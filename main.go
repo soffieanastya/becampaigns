@@ -1,6 +1,7 @@
 package main
 
-import ( 
+import (
+	"fmt"
 	"log"
 
 	// "net/http"
@@ -10,6 +11,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
+	"campaigns/auth"
 	"campaigns/handler"
 	"campaigns/user"
 )
@@ -25,6 +27,9 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
+	authService := auth.NewService()
+
+	fmt.Println(authService.GenerateToken(1001))
 
 	// userInput := user.RegisterUserInput{}
 	// userInput.Name = "soffie"
@@ -61,7 +66,8 @@ func main() {
 	// fmt.Println(user.Name)
 
 	// input sesuai isidari FE (postman)
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(userService, authService)
+
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
@@ -80,6 +86,8 @@ func main() {
 
 	// update path avatar per-user
 	api.POST("/avatar",userHandler.UploadAvatar)
+
+	// jwt
 
 	// cek em
 	router.Run(":5000")
