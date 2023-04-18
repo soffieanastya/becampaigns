@@ -72,6 +72,11 @@ func main() {
 	// login
 	api.POST("login", userHandler.Login)
 
+	// cek email sudah teraftar atau belum
+	api.POST("/email_checkers", userHandler.CheckEmailAVailability)
+
+	
+	// cek em
 	router.Run(":5000")
 	// user := user.User{
 	// 	Name: "Test simoan",

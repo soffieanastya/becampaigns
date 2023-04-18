@@ -17,6 +17,7 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
+// register user (add new user)
 func (r *repository) Save(user User) (User, error) {
 	err := r.db.Create(&user).Error
 
@@ -27,6 +28,7 @@ func (r *repository) Save(user User) (User, error) {
 	return user, nil
 }
 
+// check registered user
 func (r *repository) FindByEmail(email string) (User, error) {
 	var user User
 
