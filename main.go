@@ -2,16 +2,20 @@ package main
 
 import (
 	"log"
+	"net/http"
+	"strings"
 
 	// "net/http"
 
 	// "github.com/gin-gonic/gin"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
 	"campaigns/auth"
 	"campaigns/handler"
+	"campaigns/helper"
 	"campaigns/user"
 )
 
@@ -97,7 +101,7 @@ func main() {
 	api.POST("/email_checkers", userHandler.CheckEmailAVailability)
 
 	// update path avatar per-user
-	api.POST("/avatar", userHandler.UploadAvatar)
+	api.POST("/avatar", authMiddleware(authService, userService), userHandler.UploadAvatar)
 
 	// jwt
 
@@ -147,3 +151,70 @@ func main() {
 // handler, mapping inputan ke struct nput
 // service, mapping dari struct input ke struct users
 // repository
+
+// middleware
+// ambil nilai header authorization: Bearer tokennnn
+// dari header authorization, ambil nilai tokenny saja
+// validasi token, pake service validatetoken
+// ambil userID
+// ambil user dari db berdasar user_id lewat service
+// set context isinya user
+
+func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
+	return func (c *gin.Context) {
+	
+		// ambil nilai header authorization: Bearer tokennnn
+		authHeader := c.GetHeader("Authorization")
+	
+		if !strings.Contains(authHeader, "Bearer") {
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error",nil)
+			// abort = hentikan proses
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+	
+		// dariheader authorization, ambil nilai tokenny saja
+		// jadi isinya 2 buaharray
+		tokenString := ""
+		arrayToken := strings.Split(authHeader, " ")
+		if len(arrayToken) == 2 {
+			tokenString = arrayToken[1]
+		}
+
+		// validasi token, pake service validatetoken
+		token, err := authService.ValidateToken(tokenString)
+		if err != nil {
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error",nil)
+			// abort = hentikan proses
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+		
+		claim, ok := token.Claims.(jwt.MapClaims)
+
+		if !ok || !token.Valid {
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error",nil)
+			// abort = hentikan proses
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		// kalau semua ok, ambil userid
+		userID := int(claim["user_id"].(float64))
+
+		user, err := userService.GetUserByID(userID)
+
+		if err != nil {
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error",nil)
+			// abort = hentikan proses
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		// kalau usernyna ada dan semuanya lancar
+		// set context isinya user
+
+		// lempar data user yang login ke handler
+		c.Set("currentUser", user)
+	}
+}
