@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	// "net/http"
@@ -29,7 +28,21 @@ func main() {
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 
-	fmt.Println(authService.GenerateToken(1001))
+	// token, validasi
+	// pake middleware aja jgn manual gini
+	// token, err := authService.ValidateToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0fQ.XIQmRQxTNSxJo4fFWKdn1C5N3xxHl8reZoeBrNifXvI")
+
+	// if err != err {
+	// 	fmt.Println("ERRORRRRR")
+	// }
+
+	// if token.Valid {
+	// 	fmt.Println("VALIDDD")
+	// }else{
+	// 	fmt.Println("INVALIDD")
+	// }
+
+	// fmt.Println(authService.GenerateToken(1001))
 
 	// userInput := user.RegisterUserInput{}
 	// userInput.Name = "soffie"
@@ -39,7 +52,7 @@ func main() {
 
 	// userService.RegisterUser(userInput)
 
-	// login 
+	// login
 	// userByEmail, err := userRepository.FindByEmail("soffie@gmail.com")
 	// if err != nil {
 	// 	fmt.Println(err.Error())
@@ -68,7 +81,6 @@ func main() {
 	// input sesuai isidari FE (postman)
 	userHandler := handler.NewUserHandler(userService, authService)
 
-
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
@@ -85,7 +97,7 @@ func main() {
 	api.POST("/email_checkers", userHandler.CheckEmailAVailability)
 
 	// update path avatar per-user
-	api.POST("/avatar",userHandler.UploadAvatar)
+	api.POST("/avatar", userHandler.UploadAvatar)
 
 	// jwt
 
