@@ -66,6 +66,9 @@ func main() {
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
+	// // update avatar
+	// userService.SaveAvatar(1, "imags/1-profile.png")
+
 	// register
 	api.POST("/users", userHandler.RegisterUser)
 
@@ -75,7 +78,9 @@ func main() {
 	// cek email sudah teraftar atau belum
 	api.POST("/email_checkers", userHandler.CheckEmailAVailability)
 
-	
+	// update path avatar per-user
+	api.POST("/avatar",userHandler.UploadAvatar)
+
 	// cek em
 	router.Run(":5000")
 	// user := user.User{
