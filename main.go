@@ -1,8 +1,8 @@
 package main
 
-import (
-	// "fmt"
+import ( 
 	"log"
+
 	// "net/http"
 
 	// "github.com/gin-gonic/gin"
@@ -25,32 +25,58 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
-	
+
 	// userInput := user.RegisterUserInput{}
 	// userInput.Name = "soffie"
 	// userInput.Email = "soffie@gmail.com"
 	// userInput.Occupation = "fullstack dev"
 	// userInput.Password = "soffie"
-	
+
 	// userService.RegisterUser(userInput)
-	
+
+	// login 
+	// userByEmail, err := userRepository.FindByEmail("soffie@gmail.com")
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+
+	// if userByEmail.ID == 0 {
+	// 	fmt.Println("User tidak ditemukan")
+	// } else {
+	// 	fmt.Println(userByEmail.Name)
+	// }
+
+	// // login pake service
+	// input := user.LoginInput{
+	// 	Email: "soffie@gmail.com",
+	// 	Password: "soffie",
+	// }
+	// user, err := userService.Login(input)
+	// if err != nil {
+	// 	fmt.Println("Terjadi kesalahan")
+	// 	fmt.Println(err.Error())
+	// }
+
+	// fmt.Println(user.Email)
+	// fmt.Println(user.Name)
+
 	// input sesuai isidari FE (postman)
 	userHandler := handler.NewUserHandler(userService)
 
-	router := gin.Default() 
+	router := gin.Default()
 	api := router.Group("/api/v1")
 
-	api.POST("/users",userHandler.RegisterUser)
+	// register
+	api.POST("/users", userHandler.RegisterUser)
+
+	// login
+	api.POST("login", userHandler.Login)
 
 	router.Run(":5000")
 	// user := user.User{
 	// 	Name: "Test simoan",
 	// }
 	// userRepository.Save(user)
-
-
-
-
 
 	// fmt.Println("connection to database is good")
 
@@ -79,7 +105,7 @@ func main() {
 // 	if err != nil {
 // 		log.Fatal(err.Error())
 // 	}
-	
+
 // 	var users []user.User
 // 	db.Find(&users)
 
