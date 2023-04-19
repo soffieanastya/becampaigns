@@ -1,6 +1,9 @@
 package campaign
 
-import "time"
+import (
+	"campaigns/user"
+	"time"
+)
 
 type Campaign struct {
 	ID               int
@@ -17,6 +20,8 @@ type Campaign struct {
 	UpdatedAt        time.Time
 	// join tabel campaign image
 	CampaignImages []CampaignImage
+	// join user
+	User user.User
 }
 
 type CampaignImage struct {

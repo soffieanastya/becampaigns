@@ -5,6 +5,7 @@ import "gorm.io/gorm"
 type Repository interface {
 	FindAll() ([]Campaign, error)
 	FindByUserid(userID int) ([]Campaign, error)
+	FindByID(ID int) (Campaign, error)
 }
 
 // ini di akes di file ini aja
@@ -39,4 +40,14 @@ func (r *repository) FindByUserid(userID int) ([]Campaign, error) {
 	}
 
 	return campaigns, nil
+}
+
+// ambil sebuah campaign berdsar id campaign
+func (r *repository) FindByID(ID int) (Campaign, error) {
+	var campaign Campaign
+	err := r.db.Preload("User").Preload("CampaignImages").Where("id = ?", ID).Find(&campaign).Error
+	if err != nil {
+		return campaign, err
+	}
+	return campaign, nil
 }

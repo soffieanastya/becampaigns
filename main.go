@@ -128,6 +128,7 @@ func main() {
 
 	// campaign
 	api.GET("/campaigns",campaignHandler.GetCampaigns)
+	api.GET("/campaigns/:id",campaignHandler.GetOneCampaign)
 
 	// AKSES GAMBAR KE OCALHOST
 	// saat panggil postman, root gambar
