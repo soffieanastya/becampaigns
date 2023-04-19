@@ -129,6 +129,9 @@ func main() {
 	// campaign
 	api.GET("/campaigns",campaignHandler.GetCampaigns)
 
+	// AKSES GAMBAR KE OCALHOST
+	// saat panggil postman, root gambar
+	router.Static("/images", "./images")
 	// cek em
 	router.Run(":5000")
 	// user := user.User{
