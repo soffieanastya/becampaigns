@@ -35,22 +35,27 @@ func main() {
 
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
+	campaignService := campaign.NewService(campaignRepository)
 
-	// mbil semua data
-	// campaigns, err := campaignRepository.FindAll()
+	// cek pake service
+	campaigns, _ := campaignService.FindCampaigns(0)
 
-	// berdasar user
-	
-	campaigns, err := campaignRepository.FindByUserid(1)
-	fmt.Println("debug")
-	fmt.Println(len(campaigns))
+	fmt.Println(campaigns)
 
-	// print semua isi campaigns
-	for _, campaign := range campaigns {
-		fmt.Println(campaign.Name)
-		fmt.Println(campaign.CampaignImages)
-	}
+	// // mbil semua data
+	// // campaigns, err := campaignRepository.FindAll()
 
+	// // berdasar user
+
+	// campaigns, err := campaignRepository.FindByUserid(1)
+	// fmt.Println("debug")
+	// fmt.Println(len(campaigns))
+
+	// // print semua isi campaigns
+	// for _, campaign := range campaigns {
+	// 	fmt.Println(campaign.Name)
+	// 	fmt.Println(campaign.CampaignImages)
+	// }
 
 	// token, validasi
 	// pake middleware aja jgn manual gini
@@ -181,18 +186,18 @@ func main() {
 // set context isinya user
 
 func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
-	return func (c *gin.Context) {
-	
+	return func(c *gin.Context) {
+
 		// ambil nilai header authorization: Bearer tokennnn
 		authHeader := c.GetHeader("Authorization")
-	
+
 		if !strings.Contains(authHeader, "Bearer") {
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error",nil)
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			// abort = hentikan proses
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
-	
+
 		// dariheader authorization, ambil nilai tokenny saja
 		// jadi isinya 2 buaharray
 		tokenString := ""
@@ -204,16 +209,16 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		// validasi token, pake service validatetoken
 		token, err := authService.ValidateToken(tokenString)
 		if err != nil {
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error",nil)
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			// abort = hentikan proses
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
-		
+
 		claim, ok := token.Claims.(jwt.MapClaims)
 
 		if !ok || !token.Valid {
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error",nil)
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			// abort = hentikan proses
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
@@ -225,7 +230,7 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		user, err := userService.GetUserByID(userID)
 
 		if err != nil {
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error",nil)
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			// abort = hentikan proses
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
