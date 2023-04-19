@@ -126,7 +126,7 @@ func main() {
 
 	api.POST("/campaigns",authMiddleware(authService, userService),campaignHandler.CreateCampaign)
 	api.PUT("/campaigns/:id",authMiddleware(authService,userService),campaignHandler.UpdateCampaign)
-
+	api.POST("/campaign-images",authMiddleware(authService,userService),campaignHandler.UploadImageCampaign)
 	// AKSES GAMBAR KE OCALHOST
 	// saat panggil postman, root gambar
 	router.Static("/images", "./images")
