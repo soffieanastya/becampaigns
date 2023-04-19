@@ -4,11 +4,7 @@ import (
 	// "fmt" 
 	"log"
 	"net/http"
-	"strings"
-
-	// "net/http"
-
-	// "github.com/gin-gonic/gin"
+	"strings" 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -129,6 +125,8 @@ func main() {
 	api.GET("/campaigns/:id",campaignHandler.GetOneCampaign)
 
 	api.POST("/campaigns",authMiddleware(authService, userService),campaignHandler.CreateCampaign)
+	api.PUT("/campaigns/:id",authMiddleware(authService,userService),campaignHandler.UpdateCampaign)
+
 	// AKSES GAMBAR KE OCALHOST
 	// saat panggil postman, root gambar
 	router.Static("/images", "./images")
