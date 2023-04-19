@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -14,6 +15,7 @@ import (
 	"gorm.io/gorm"
 
 	"campaigns/auth"
+	"campaigns/campaign"
 	"campaigns/handler"
 	"campaigns/helper"
 	"campaigns/user"
@@ -29,8 +31,26 @@ func main() {
 	}
 
 	userRepository := user.NewRepository(db)
+	campaignRepository := campaign.NewRepository(db)
+
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
+
+	// mbil semua data
+	// campaigns, err := campaignRepository.FindAll()
+
+	// berdasar user
+	
+	campaigns, err := campaignRepository.FindByUserid(1)
+	fmt.Println("debug")
+	fmt.Println(len(campaigns))
+
+	// print semua isi campaigns
+	for _, campaign := range campaigns {
+		fmt.Println(campaign.Name)
+		fmt.Println(campaign.CampaignImages)
+	}
+
 
 	// token, validasi
 	// pake middleware aja jgn manual gini
