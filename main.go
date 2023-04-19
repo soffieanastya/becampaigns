@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "fmt"
+	// "fmt" 
 	"log"
 	"net/http"
 	"strings"
@@ -36,9 +36,7 @@ func main() {
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
 	campaignService := campaign.NewService(campaignRepository)
-
-	
-
+ 
 	// // mbil semua data
 	// // campaigns, err := campaignRepository.FindAll()
 
@@ -130,6 +128,7 @@ func main() {
 	api.GET("/campaigns",campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id",campaignHandler.GetOneCampaign)
 
+	api.POST("/campaigns",authMiddleware(authService, userService),campaignHandler.CreateCampaign)
 	// AKSES GAMBAR KE OCALHOST
 	// saat panggil postman, root gambar
 	router.Static("/images", "./images")

@@ -6,6 +6,7 @@ type Repository interface {
 	FindAll() ([]Campaign, error)
 	FindByUserid(userID int) ([]Campaign, error)
 	FindByID(ID int) (Campaign, error)
+	Save(campaign Campaign) (Campaign, error)
 }
 
 // ini di akes di file ini aja
@@ -49,5 +50,17 @@ func (r *repository) FindByID(ID int) (Campaign, error) {
 	if err != nil {
 		return campaign, err
 	}
+	return campaign, nil
+}
+
+
+// create campaign by user
+func (r *repository) Save(campaign Campaign) (Campaign, error) {
+	err := r.db.Create(&campaign).Error
+
+	if err != nil {
+		return campaign, err
+	}
+
 	return campaign, nil
 }
