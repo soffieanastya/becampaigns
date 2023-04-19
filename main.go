@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -37,10 +37,7 @@ func main() {
 	authService := auth.NewService()
 	campaignService := campaign.NewService(campaignRepository)
 
-	// cek pake service
-	campaigns, _ := campaignService.FindCampaigns(0)
-
-	fmt.Println(campaigns)
+	
 
 	// // mbil semua data
 	// // campaigns, err := campaignRepository.FindAll()
@@ -109,6 +106,7 @@ func main() {
 
 	// input sesuai isidari FE (postman)
 	userHandler := handler.NewUserHandler(userService, authService)
+	campaignHandler := handler.NewCampaignHandler(campaignService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
@@ -128,7 +126,8 @@ func main() {
 	// update path avatar per-user
 	api.POST("/avatar", authMiddleware(authService, userService), userHandler.UploadAvatar)
 
-	// jwt
+	// campaign
+	api.GET("/campaigns",campaignHandler.GetCampaigns)
 
 	// cek em
 	router.Run(":5000")
