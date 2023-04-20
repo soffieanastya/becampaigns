@@ -16,6 +16,7 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
+// get transaction per-campaign
 func (r *repository) GetCampaignID(campaignID int) ([]Transaction, error) {
 	var transactions []Transaction
 
@@ -26,10 +27,11 @@ func (r *repository) GetCampaignID(campaignID int) ([]Transaction, error) {
 	return transactions, nil
 }
 
+// get transactions per-user yg login
 func (r *repository) GetByUserID(userID int) ([]Transaction, error) {
 	var transactions []Transaction
-
-	err := r.db.Preload("Campaign").Where("user_id = ?", userID).Find(&transactions).Error
+	// join 3 tabel/join banyak tabel
+	err := r.db.Preload("Campaign.CampaignImages","campaign_images.is_primary = 1").Where("user_id = ?", userID).Order("id desc").Find(&transactions).Error
 	if err != nil {
 		return transactions, err
 	}

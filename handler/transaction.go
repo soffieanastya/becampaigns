@@ -42,3 +42,18 @@ func (h *transactionHandler) GetCampaignTransaction(c *gin.Context) {
 }
 
 // create by s o f f i e  a p u t r i
+// transaksi user sesuai user yang login
+func (h *transactionHandler) GetUserTransaction(c *gin.Context){
+	// get id user from middleware yg di set
+	currentUser := c.MustGet("currentUser").(user.User)
+	userID := currentUser.ID
+
+	transactions, err := h.service.GetTransactionsByUserID(userID)
+	if err != nil {
+		response := helper.APIResponse("Failed to get user transactions",http.StatusBadRequest,"error",nil)
+		c.JSON(http.StatusBadRequest,response)
+		return 
+	}
+	response := helper.APIResponse("User transactions",http.StatusOK,"success",transaction.FormatUserTransactions(transactions))
+	c.JSON(http.StatusOK,response)
+}
